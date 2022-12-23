@@ -5,7 +5,6 @@ import matplotlib.pyplot as plt
 from robot_models.SingleIntegrator2Dv2 import *
 from robot_models.Unicycle import *
 from robot_models.obstacles import *
-from utils.utils import *
 from graph_utils2leader import *
 
 from matplotlib.animation import FFMpegWriter
@@ -154,7 +153,6 @@ with writer.saving(fig, movie_name, 100):
             # Obstacle avoidance
             for j in range(num_obstacles):
                 h, dh_dxi, dh_dxj = robots[i].agent_barrier(obstacles[j], d_min_obstacles)
-                robots[i].obs_h[0,j] = h
                 
                 # Control QP constraint
                 robots[i].A1[const_index,:] = dh_dxi @ robots[i].g()

@@ -36,6 +36,11 @@ class SingleIntegrator2D:
         self.obs_alpha =  alpha*np.ones((1,num_obstacles))#
       
         self.robot_alpha = alpha*np.ones((1,num_robots))
+     
+        self.robot_h = np.ones((1,num_robots))
+        self.obs_h = np.ones((1,num_obstacles))
+        
+        self.robot_connectivity_alpha = alpha*np.ones((1,1)) 
         
         num_constraints1  = num_robots - 1 + num_obstacles + num_connectivity #+ num_leaders 
         self.A1 = np.zeros((num_constraints1,2))
@@ -44,7 +49,7 @@ class SingleIntegrator2D:
         
         self.Xs = X0.reshape(-1,1)
         self.Us = np.array([0,0]).reshape(-1,1)
-
+        
         
     def f(self):
         return np.array([0,0]).reshape(-1,1)
