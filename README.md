@@ -1,7 +1,7 @@
 # Multi-agent Connectivity and Control with CBF
 
 
-This repository implements the work done during the term September-December 2022. Please contact me at hardiksp@umich.edu to raise any issues with the code or help in implementation or adaptation of the code for your purpose.
+This repository implements the work done during the term September-December 2022. Please contact me at hardiksp@umich.edu to raise any issues with the code or seek help in implementation or adaptation of the code for your purpose.
 
 ## Description
 This work considers a group of agents that are subjected to connectivity constraints and multiple safety constraints. The connectivity is either imposed by enforcing maximum distance constraint w.r.t leader agent OR by using gradient of the eigenvalue of laplacian matrix of tne connectivity graph. Both the approaches are implemented.
