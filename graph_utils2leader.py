@@ -1,6 +1,7 @@
 import numpy as np
 import cvxpy as cp
 
+# Standard unweighted Laplacian construction (not used in simulation result. here only for reference)
 def connectivity_undirected_laplacian(robots, max_dist):
     
     # Adjacency Matrix
@@ -19,6 +20,8 @@ def connectivity_undirected_laplacian(robots, max_dist):
     L = D - A
     return L
 
+# Standard Weighted Laplacian construction (not used in simulation result. here only for reference)
+# Does not give priority to leader when deciding on weights
 def weighted_connectivity_undirected_laplacian(robots, max_dist = 1.0):
     
     # thresholds
@@ -84,10 +87,13 @@ def weighted_connectivity_undirected_laplacian(robots, max_dist = 1.0):
     L = D - A
     return L
 
+# Weighted Laplacian construction with priority to leader. If distance to leader is more than maximum distance, all edge weights go to zero too
+# checks which leader is supposed to be followed and then assigns weights to edges
+# Can lead to asymmetric Laplacian matrix
 def leader_weighted_connectivity_undirected_laplacian(robots, max_dist = 1.0):
     
     # thresholds
-    rho =  1.0 #1.0 #0.5
+    rho =  1.0 
     gamma = 0.5
     
     # Adjacency Matrix
@@ -99,7 +105,7 @@ def leader_weighted_connectivity_undirected_laplacian(robots, max_dist = 1.0):
     
     # Each robot distance to one of the leader: decide only on element i,j (not j,i)
     for i in range( len(robots) ):
-        for j in range(2):
+        for j in range(2): # leaders have index 0 and 1
             if j==i or (i==0 and j==1) or (i==1 and j==0):
                 continue
             # weight
@@ -128,7 +134,7 @@ def leader_weighted_connectivity_undirected_laplacian(robots, max_dist = 1.0):
                 der_i = A[i , j] * ( -gamma/(max_dist-rho) * d_dist_dxi )
                 der_j = A[i , j] * ( -gamma/(max_dist-rho) * d_dist_dxj )
             
-            # or any other criteria
+            # Only with respect to leader, it is symmetric
             A[j, i] = A[i, j]
             
             # i's Adjacency derivatives
@@ -154,9 +160,7 @@ def leader_weighted_connectivity_undirected_laplacian(robots, max_dist = 1.0):
     # positive if edge exists from i to j
     for i in range( len(robots) ):
             
-        dist_leader = 0
-        # for j in range( i+1, len(robots) ):
-        for j in range( len(robots) ): # no longer symmetric
+        for j in range( len(robots) ):
             if j==0 or j==1 or i==j:
                 continue
             # weight
@@ -165,7 +169,6 @@ def leader_weighted_connectivity_undirected_laplacian(robots, max_dist = 1.0):
             # consider agents from the same group only
             if not (robots[i].leader_index == None or robots[j].leader_index==None):
                 if robots[i].leader_index != robots[j].leader_index:
-                    # print("DOING THIS")
                     dist = 0
                        
             # derivative w.r.t state
@@ -186,8 +189,7 @@ def leader_weighted_connectivity_undirected_laplacian(robots, max_dist = 1.0):
                 der_j = A[i , j] * ( -gamma/(max_dist-rho) * d_dist_dxj )
             
             # Add leader connection weight to this and see what happens!    
-            if i>=2: # 1,2   
-                # i: robot, j:leader
+            if i>=2:   
                 if robots[i].leader_index == None: # i depends on both the leaders
                     der_i = der_i * A[i, 0] * A[i, 1] * A[j, 0] * A[j, 1] + A[i, j] * robots[i].dA_dx[i,0,:] * A[i, 1] * A[j, 0] * A[j, 1] + A[i, j] * A[i, 0] * robots[i].dA_dx[i,1,:] * A[j, 0] * A[j, 1] + A[i, j] * A[i, 0] * A[i, 1] * robots[i].dA_dx[j,0,:] * A[j, 1] + A[i, j] * A[i, 0] * A[i, 1] * A[j, 0] * robots[i].dA_dx[j,1,:]
                     der_j = der_j * A[i, 0] * A[i, 1] + A[i, j] * robots[j].dA_dx[i,0,:] * A[i, 1] + A[i, j] * A[i, 0] * robots[j].dA_dx[i,1,:] + A[i ,j] * A[i, 0] * A[i, 1] * robots[i].dA_dx[j,0,:] * A[j, 1] + A[i, j] * A[i, 0] * A[i, 1] * A[j, 0] * robots[i].dA_dx[j,1,:]
@@ -201,27 +203,19 @@ def leader_weighted_connectivity_undirected_laplacian(robots, max_dist = 1.0):
                     der_j = der_j * A[i, 1] * A[j, 1] + A[i, j] * robots[j].dA_dx[i,1,:] * A[j, 1] + A[i, j] * A[i, 1] * robots[j].dA_dx[j,1,:]
                     A[i, j] = A[i, j] * A[i, 1] * A[j, 1]
                    
-            # or any other criteria
-            # A[j, i] = A[i, j]
             
             # i's Adjacency derivatives
             robots[i].dA_dx[i,j,:] = der_i
-            # robots[i].dA_dx[j,i,:] = der_i
             
             # j's Adjacency derivatives
             robots[j].dA_dx[i,j,:] = der_j
-            # robots[j].dA_dx[j,i,:] = der_j
             
             # Laplacian Derivatives
             robots[i].dL_dx[i,j,:] = - robots[i].dA_dx[i,j,:]
-            # robots[i].dL_dx[j,i,:] = - robots[i].dA_dx[j,i,:]
             robots[i].dL_dx[i,i,:] = robots[i].dL_dx[i,i,:] + robots[i].dA_dx[i,j,:]
-            # robots[i].dL_dx[j,j,:] = robots[i].dL_dx[j,j,:] + robots[i].dA_dx[j,i,:]
             
             robots[j].dL_dx[i,j,:] = - robots[j].dA_dx[i,j,:]
-            # robots[j].dL_dx[j,i,:] = - robots[j].dA_dx[j,i,:]
             robots[j].dL_dx[i,i,:] = robots[j].dL_dx[i,i,:] + robots[j].dA_dx[i,j,:]
-            # robots[j].dL_dx[j,j,:] = robots[j].dL_dx[j,j,:] + robots[j].dA_dx[j,i,:]
             
     # Degree matrix
     D = np.diag( np.sum( A, axis = 1 ) )
@@ -229,10 +223,9 @@ def leader_weighted_connectivity_undirected_laplacian(robots, max_dist = 1.0):
     # Laplacian Matrix
     L = D - A
     
-    # print("L",L)
-    # exit()
     return L
 
+# Compute gradient of second smallest eigenvalue w.r.t state x
 def lambda2_dx( robots, L, Lambda2, V2 ):
     dLambda2_dL = V2 @ V2.T / ( V2.T @ V2 )
     
@@ -246,7 +239,7 @@ def lambda2_dx( robots, L, Lambda2, V2 ):
 # Eigenvalue and Eigenvectors of laplacian Matrix: 
 def laplacian_eigen( L ):
    Lambda, V = np.linalg.eig(L)  # eigenvalues, right eigenvectorsb
-   eigenvalue_order = np.argsort(Lambda)
+   eigenvalue_order = np.argsort(Lambda) # sort the eigenvalues
    Lambda = Lambda[eigenvalue_order]
    V = V[:, eigenvalue_order]
    return np.real(Lambda), np.real(V)

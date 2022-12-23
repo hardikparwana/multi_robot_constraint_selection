@@ -34,50 +34,17 @@ class SingleIntegrator2D:
         self.leader_index = None
         
         self.obs_alpha =  alpha*np.ones((1,num_obstacles))#
-        self.trust_obs = np.ones((1,num_obstacles))
-        
+      
         self.robot_alpha = alpha*np.ones((1,num_robots))
-        self.trust_robot = np.ones((1,num_robots))
-        
-        self.robot_objective = [0] * num_robots
-        self.obs_objective = [0] * num_obstacles
-        
-        self.robot_h = np.ones((1,num_robots))
-        self.obs_h = np.ones((1,num_obstacles))
-        
-        self.robot_connectivity_objective = 0
-        self.robot_connectivity_alpha = alpha*np.ones((1,1))
-        self.robot_connectivity_h = np.array([[1.0]])   
-        
-        # Old
-        # for Trust computation
-        # self.adv_alpha = alpha*np.ones(num_adversaries)
-        # self.trust_adv = 1
-        # self.robot_alpha = alpha*np.ones(num_robots)
-        # self.trust_robot = 1
-        # self.adv_objective = [0] * num_adversaries
-        # self.robot_objective = [0] * num_robots
         
         num_constraints1  = num_robots - 1 + num_obstacles + num_connectivity #+ num_leaders 
         self.A1 = np.zeros((num_constraints1,2))
         self.b1 = np.zeros((num_constraints1,1))
         self.slack_constraint = np.zeros((num_constraints1,1))
         
-        # For plotting
-        # self.adv_alphas = alpha*np.ones((1,num_leaders))
-        # self.trust_advs = np.ones((1,num_leaders))
-        # self.robot_alphas = alpha*np.ones((1,num_robots))
-        # self.trust_robots = 1*np.ones((1,num_robots))
-        # self.obs_alphas = alpha*np.ones((1,num_obstacles))
-        # self.trust_obss = 1*np.ones((1,num_obstacles))
         self.Xs = X0.reshape(-1,1)
         self.Us = np.array([0,0]).reshape(-1,1)
-        # self.adv_hs = np.ones((1,num_leaders))
-        # self.robot_hs = np.ones((1,num_robots))
-        # self.obs_hs = np.ones((1,num_obstacles))
-        # self.robot_connectivity_alphas = np.ones((1,1))
-        # self.robot_connectivity_hs = np.ones((1,1))
-        
+
         
     def f(self):
         return np.array([0,0]).reshape(-1,1)
