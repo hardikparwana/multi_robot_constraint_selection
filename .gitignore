@@ -2,3 +2,5 @@ __pycache__/graph_utils.cpython-38.pyc
 utils/__pycache__/utils.cpython-38.pyc
 robot_models/__pycache__/obstacles.cpython-38.pyc robot_models/__pycache__/SingleIntegrator2D.cpython-38.pyc
 long_corridor_single_leader.mp4
+robot_models/__pycache__/*
+utils/__pycache__/*
