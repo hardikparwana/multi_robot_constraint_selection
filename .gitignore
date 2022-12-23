@@ -5,3 +5,4 @@ long_corridor_single_leader.mp4
 robot_models/__pycache__/*
 utils/__pycache__/*
 *.mp4
+__pycache__/*
