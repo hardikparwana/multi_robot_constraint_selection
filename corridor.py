@@ -4,7 +4,6 @@ import cvxpy as cp
 import matplotlib.pyplot as plt
 from robot_models.SingleIntegrator2D import *
 from robot_models.obstacles import *
-from utils.utils import *
 from graph_utils import *
 
 from matplotlib.animation import FFMpegWriter

@@ -33,14 +33,10 @@ class SingleIntegrator2D:
         self.eigen_alpha = eigen_alpha
         self.obs_alpha =  alpha*np.ones((1,num_obstacles))#
         self.robot_alpha = alpha*np.ones((1,num_robots))
-        self.robot_objective = [0] * num_robots
-        self.obs_objective = [0] * num_obstacles
         self.robot_h = np.ones((1,num_robots))
-        self.adv_h = np.ones((1,num_adversaries))
         self.obs_h = np.ones((1,num_obstacles))
         self.robot_connectivity_objective = 0
-        self.robot_connectivity_alpha = alpha*np.ones((1,1))
-        self.robot_connectivity_h = np.array([[1.0]])   
+        self.robot_connectivity_alpha = alpha*np.ones((1,1)) 
         
         num_constraints1  = num_robots - 1 + num_obstacles + num_connectivity + num_eigen_connectivity
         self.A1 = np.zeros((num_constraints1,2))
