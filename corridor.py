@@ -27,7 +27,7 @@ update_param = True
 bigNaN = 10000000
 
 eigen_alpha = 0.8  # CBF alpha parameter for eiganvalue constraint
-alpha_cbf = 7.0 #3.0#2.0 #0.7 #0.8
+alpha_cbf = 7.0 
 
 # Plot                  
 plt.ion()
@@ -66,7 +66,7 @@ movie_name = 'long_corridor_single_leader.mp4'
 
 # agents
 robots = []
-num_robots = 13
+num_robots = 13  # Update number of robots here
 
 y_offset = -0.5
 robots.append( SingleIntegrator2D(np.array([0,y_offset]), dt, ax, id = 0, color='r',palpha=1.0, alpha=alpha_cbf, eigen_alpha = eigen_alpha, num_obstacles=num_obstacles ) )
