@@ -4,3 +4,4 @@ robot_models/__pycache__/obstacles.cpython-38.pyc robot_models/__pycache__/Singl
 long_corridor_single_leader.mp4
 robot_models/__pycache__/*
 utils/__pycache__/*
+*.mp4
