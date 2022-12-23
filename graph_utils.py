@@ -1,6 +1,7 @@
 import numpy as np
 import cvxpy as cp
 
+# Standard unweighted Laplacian construction (not used in simulation result. here only for reference)
 def connectivity_undirected_laplacian(robots, max_dist):
     
     # Adjacency Matrix
@@ -19,6 +20,8 @@ def connectivity_undirected_laplacian(robots, max_dist):
     L = D - A
     return L
 
+# Standard Weighted Laplacian construction (not used in simulation result. here only for reference)
+# Does not give priority to leader when deciding on weights
 def weighted_connectivity_undirected_laplacian(robots, max_dist = 1.0):
     
     # thresholds
@@ -84,6 +87,7 @@ def weighted_connectivity_undirected_laplacian(robots, max_dist = 1.0):
     L = D - A
     return L
 
+# Weighted Laplacian construction with priority to leader. If distance to leader is more than maximum distance, all edge weights go to zero too
 def leader_weighted_connectivity_undirected_laplacian(robots, max_dist = 1.0):
     
     # thresholds
@@ -98,6 +102,7 @@ def leader_weighted_connectivity_undirected_laplacian(robots, max_dist = 1.0):
         robots[i].dA_dx = np.zeros( ( len(robots), len(robots), np.shape(robots[i].X)[0] ) )
     
     for i in range( len(robots) ):
+        # i=0 is the leader
         
         dist_leader = 0
         for j in range( i+1, len(robots) ):
@@ -124,7 +129,6 @@ def leader_weighted_connectivity_undirected_laplacian(robots, max_dist = 1.0):
             
             # Add leader connection weight to this and see what happens!    
             if i>0: # 1,2   
-                # i: robot, j:leader
                 der_i = der_i * A[i, 0] * A[j, 0] + A[i, j] * robots[i].dA_dx[i,0,:] * A[j, 0]
                 der_j = der_j * A[i, 0] * A[j, 0] + A[i, j] * A[i, 0] * robots[j].dA_dx[j,0,:]
                 A[i, j] = A[i, j] * A[i, 0] * A[j, 0]
@@ -158,6 +162,7 @@ def leader_weighted_connectivity_undirected_laplacian(robots, max_dist = 1.0):
     L = D - A
     return L
 
+# Compute gradient of second smallest eigenvalue w.r.t state x
 def lambda2_dx( robots, L, Lambda2, V2 ):
     dLambda2_dL = V2 @ V2.T / ( V2.T @ V2 )
     
@@ -170,8 +175,8 @@ def lambda2_dx( robots, L, Lambda2, V2 ):
   
 # Eigenvalue and Eigenvectors of laplacian Matrix: 
 def laplacian_eigen( L ):
-   Lambda, V = np.linalg.eig(L)  # eigenvalues, right eigenvectorsb
-   eigenvalue_order = np.argsort(Lambda)
+   Lambda, V = np.linalg.eig(L)  # eigenvalues, right eigenvectors
+   eigenvalue_order = np.argsort(Lambda)  # sort the eigenvalues
    Lambda = Lambda[eigenvalue_order]
    V = V[:, eigenvalue_order]
    return Lambda, V

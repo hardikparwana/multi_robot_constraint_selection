@@ -31,13 +31,8 @@ class SingleIntegrator2D:
         
          # for Trust computation
         self.eigen_alpha = eigen_alpha
-        self.adv_alpha =  alpha*np.ones((1,num_adversaries))# alpha*np.ones((1,num_adversaries))
-        self.trust_adv = np.ones((1,num_adversaries))
         self.obs_alpha =  alpha*np.ones((1,num_obstacles))#
-        self.trust_obs = np.ones((1,num_obstacles))
         self.robot_alpha = alpha*np.ones((1,num_robots))
-        self.trust_robot = np.ones((1,num_robots))
-        self.adv_objective = [0] * num_adversaries
         self.robot_objective = [0] * num_robots
         self.obs_objective = [0] * num_obstacles
         self.robot_h = np.ones((1,num_robots))
@@ -47,7 +42,7 @@ class SingleIntegrator2D:
         self.robot_connectivity_alpha = alpha*np.ones((1,1))
         self.robot_connectivity_h = np.array([[1.0]])   
         
-        num_constraints1  = num_robots - 1 + num_adversaries + num_obstacles + num_connectivity + num_eigen_connectivity
+        num_constraints1  = num_robots - 1 + num_obstacles + num_connectivity + num_eigen_connectivity
         self.A1 = np.zeros((num_constraints1,2))
         self.b1 = np.zeros((num_constraints1,1))
         self.slack_constraint = np.zeros((num_constraints1,1))
